@@ -1,3 +1,6 @@
 * Lazy K Interpreter and Scm to Lazy K translator
 It supports combinator style only for now.
-And very very very very buggy and slow.
+And very buggy and slow.
+
+* Known Bugs
+`fix' function seems not to work.
