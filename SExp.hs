@@ -86,10 +86,10 @@ enclose name dec body = AppL (Abs name dec) body
 evalLispWithEnv :: String -> String -> Maybe Expr
 evalLispWithEnv envSrc body =
   let (run, st) = either (error.show) id $ runParser ((,) <$> env <*> getState) empty "env" envSrc
-      ans  = either (const Nothing) (Just  . run) $ runParser (spaces *> lisp <* eof) st "src" body
+      ans  = either (error . show) (Just  . run) $ runParser (spaces *> lisp <* eof) st "src" body
       ans' = flip (foldr (uncurry enclose))
                [(Name "S" 0, Prim S), (Name "K" 0, Prim K), (Name "I" 0, Prim I)] <$> ans
-  in eval <$> (translate =<< ans)
+  in translate =<< ans
 
 evalLispDefault :: String -> IO (Maybe Expr)
 evalLispDefault src = do
