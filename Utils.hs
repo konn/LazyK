@@ -76,8 +76,8 @@ instance (FromExpr a, FromExpr b) => FromExpr (a, b) where
  
 instance FromExpr a => FromExpr [a] where 
   fromExpr ex = (:) <$> fromExpr (App [scm| (car) |] ex)
-                    <*> pure (fromJust $ fromExpr (App [scm| (cdr) |] ex))
-           --  <|> if fromExpr ex == Just (0::Word) then Just [] else Nothing
+                    <*> pure (fromJust rest)
+    where rest = fromExpr (App [scm| (cdr) |] ex) <|> if fromExpr ex == Just (0::Word) then Just [] else Nothing
 
 instance FromExpr String where
-  fromExpr ex = decodeString . map (toEnum . fromEnum) . takeWhile (< (256::Word))<$> fromExpr ex
+  fromExpr ex = decodeString . map (toEnum . fromEnum) . takeWhile (< (256::Word)) <$> fromExpr ex
